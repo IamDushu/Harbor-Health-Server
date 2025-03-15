@@ -12,8 +12,10 @@ import (
 
 type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	CreateVerifyRecord(ctx context.Context, arg CreateVerifyRecordParams) (EmailVerification, error)
 	GetSession(ctx context.Context, sessionID uuid.UUID) (Session, error)
+	GetUser(ctx context.Context, email string) (User, error)
 	GetVerifyRecord(ctx context.Context, arg GetVerifyRecordParams) (EmailVerification, error)
 	GetVerifyRecordOnToken(ctx context.Context, token string) (EmailVerification, error)
 	UpdateVerifyRecordAttempt(ctx context.Context, verificationID uuid.UUID) (EmailVerification, error)

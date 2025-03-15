@@ -56,13 +56,12 @@ type Session struct {
 }
 
 type User struct {
-	UserID       uuid.UUID      `json:"user_id"`
-	Email        string         `json:"email"`
-	PasswordHash string         `json:"password_hash"`
-	FirstName    string         `json:"first_name"`
-	LastName     string         `json:"last_name"`
-	PhoneNumber  sql.NullString `json:"phone_number"`
-	CreatedAt    time.Time      `json:"created_at"`
+	UserID      uuid.UUID      `json:"user_id"`
+	Email       string         `json:"email"`
+	FirstName   string         `json:"first_name"`
+	LastName    string         `json:"last_name"`
+	PhoneNumber sql.NullString `json:"phone_number"`
+	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type Visit struct {
