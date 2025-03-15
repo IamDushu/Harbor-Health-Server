@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -80,10 +81,20 @@ func (s *Server) UpdateUser(ctx *gin.Context) {
 
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
+	phoneDetails, err := util.VerifyPhone(req.PhoneNumber, s.config.TwillioAccountSID, s.config.TwillioAuthToken)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	if !phoneDetails.Valid {
+		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("invalid phone number: %v", phoneDetails.ValidationErrors)))
+		return
+	}
+
 	arg := db.UpdateUserParams{
 		FirstName:   req.FirstName,
 		LastName:    req.LastName,
-		PhoneNumber: req.PhoneNumber,
+		PhoneNumber: phoneDetails.PhoneNumber,
 		Email:       authPayload.Email,
 	}
 
