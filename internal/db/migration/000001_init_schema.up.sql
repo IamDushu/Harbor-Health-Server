@@ -3,7 +3,7 @@ CREATE TABLE "users" (
   "email" varchar UNIQUE NOT NULL,
   "first_name" varchar NOT NULL,
   "last_name" varchar NOT NULL,
-  "phone_number" varchar,
+  "phone_number" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 

@@ -24,6 +24,9 @@ func (s *Server) setupRouter() {
 	router.POST("/api/registration/email/verify", s.verifyUser)
 	router.POST("/api/tokens/renew_access", s.renewAccessToken)
 
+	authRoutes := router.Group("/").Use(authMiddleware(s.tokenMaker))
+	authRoutes.POST("/api/users", s.UpdateUser)
+
 	s.router = router
 }
 
