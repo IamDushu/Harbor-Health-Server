@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS visits;
+DROP TABLE IF EXISTS providers;
+DROP TABLE IF EXISTS members;
+DROP TABLE IF EXISTS insurance;
+
