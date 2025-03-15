@@ -5,7 +5,7 @@ createdb:
 	docker exec -it postgres17 createdb --username=root --owner=root harbordb
 
 dropdb:
-	docker exec -it postgres12 dropdb harbordb
+	docker exec -it postgres17 dropdb harbordb
 
 migrateup: 
 	migrate -path internal/db/migration -database="postgresql://root:secret@localhost:5432/harbordb?sslmode=disable" -verbose up
@@ -13,7 +13,10 @@ migrateup:
 migratedown: 
 	migrate -path internal/db/migration -database="postgresql://root:secret@localhost:5432/harbordb?sslmode=disable" -verbose down
 
+sqlc: 
+	sqlc generate
+
 server:
 	go run ./cmd/harbor
 
-.PHONY: postgres createdb dropdb migrateup migratedown
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc

@@ -1,20 +1,25 @@
-CREATE TABLE "members" (
-  "member_id" uuid PRIMARY KEY,
+CREATE TABLE "users" (
+  "user_id" uuid PRIMARY KEY,
   "email" varchar UNIQUE NOT NULL,
   "password_hash" varchar NOT NULL,
   "first_name" varchar NOT NULL,
   "last_name" varchar NOT NULL,
   "phone_number" varchar,
-  "gender" varchar,
-  "insurance" uuid,
+  "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE "members" (
+  "member_id" uuid PRIMARY KEY,
+  "user_id" uuid UNIQUE NOT NULL,
+  "gender" varchar NOT NULL,
+  "insurance" uuid NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "providers" (
   "provider_id" uuid PRIMARY KEY,
-  "first_name" varchar NOT NULL,
-  "last_name" varchar NOT NULL,
-  "specialization" varchar,
+  "user_id" uuid UNIQUE NOT NULL,
+  "specialization" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
@@ -35,13 +40,42 @@ CREATE TABLE "visits" (
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
-CREATE INDEX "idx_members_email" ON "members" ("email");
+CREATE TABLE "email_verification" (
+  "verification_id" uuid PRIMARY KEY,
+  "email" varchar NOT NULL,
+  "token" text UNIQUE NOT NULL,
+  "hashed_otp" varchar NOT NULL,
+  "purpose" varchar NOT NULL,
+  "attempts" integer NOT NULL DEFAULT 0,
+  "expires_at" timestamptz NOT NULL,
+  "valid" boolean NOT NULL DEFAULT true,
+  "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE "sessions" (
+  "session_id" uuid PRIMARY KEY,
+  "email" varchar NOT NULL,
+  "refresh_token" varchar NOT NULL,
+  "user_agent" varchar NOT NULL,
+  "client_ip" varchar NOT NULL,
+  "is_blocked" boolean NOT NULL DEFAULT false,
+  "expires_at" timestamptz NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE INDEX "idx_users_email" ON "users" ("email");
 
 CREATE INDEX "idx_visits_provider_id" ON "visits" ("provider_id");
 
 CREATE INDEX "idx_visits_member_id" ON "visits" ("members_id");
 
+CREATE UNIQUE INDEX email_purpose_valid_key ON email_verification (email, purpose) WHERE valid = true;
+
+ALTER TABLE "members" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+
 ALTER TABLE "members" ADD FOREIGN KEY ("insurance") REFERENCES "insurance" ("insurer_id");
+
+ALTER TABLE "providers" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
 ALTER TABLE "visits" ADD FOREIGN KEY ("provider_id") REFERENCES "providers" ("provider_id");
 
