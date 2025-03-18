@@ -23,18 +23,16 @@ type EmailVerification struct {
 	CreatedAt      time.Time `json:"created_at"`
 }
 
-type Insurance struct {
-	InsurerID uuid.UUID `json:"insurer_id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
 type Member struct {
-	MemberID  uuid.UUID `json:"member_id"`
-	UserID    uuid.UUID `json:"user_id"`
-	Gender    string    `json:"gender"`
-	Insurance uuid.UUID `json:"insurance"`
-	CreatedAt time.Time `json:"created_at"`
+	MemberID       uuid.UUID `json:"member_id"`
+	UserID         uuid.UUID `json:"user_id"`
+	Gender         string    `json:"gender"`
+	DateOfBirth    time.Time `json:"date_of_birth"`
+	Insurance      string    `json:"insurance"`
+	AddressLineOne string    `json:"address_line_one"`
+	AddressLineTwo string    `json:"address_line_two"`
+	AcceptedTerms  bool      `json:"accepted_terms"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
 type Provider struct {
@@ -61,6 +59,7 @@ type User struct {
 	FirstName   string    `json:"first_name"`
 	LastName    string    `json:"last_name"`
 	PhoneNumber string    `json:"phone_number"`
+	IsOnboarded bool      `json:"is_onboarded"`
 	CreatedAt   time.Time `json:"created_at"`
 }
 

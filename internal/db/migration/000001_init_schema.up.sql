@@ -4,6 +4,7 @@ CREATE TABLE "users" (
   "first_name" varchar NOT NULL,
   "last_name" varchar NOT NULL,
   "phone_number" varchar NOT NULL,
+  "is_onboarded" boolean NOT NULL DEFAULT false,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
@@ -11,7 +12,11 @@ CREATE TABLE "members" (
   "member_id" uuid PRIMARY KEY,
   "user_id" uuid UNIQUE NOT NULL,
   "gender" varchar NOT NULL,
-  "insurance" uuid NOT NULL,
+  "date_of_birth" date NOT NULL,
+  "insurance" varchar NOT NULL,
+  "address_line_one" varchar NOT NULL,
+  "address_line_two" varchar NOT NULL,
+  "accepted_terms" boolean NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
@@ -19,12 +24,6 @@ CREATE TABLE "providers" (
   "provider_id" uuid PRIMARY KEY,
   "user_id" uuid UNIQUE NOT NULL,
   "specialization" varchar NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
-);
-
-CREATE TABLE "insurance" (
-  "insurer_id" uuid PRIMARY KEY,
-  "name" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
@@ -71,8 +70,6 @@ CREATE INDEX "idx_visits_member_id" ON "visits" ("members_id");
 CREATE UNIQUE INDEX email_purpose_valid_key ON email_verification (email, purpose) WHERE valid = true;
 
 ALTER TABLE "members" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
-
-ALTER TABLE "members" ADD FOREIGN KEY ("insurance") REFERENCES "insurance" ("insurer_id");
 
 ALTER TABLE "providers" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
