@@ -25,6 +25,7 @@ type userResponse struct {
 	FirstName   string    `json:"first_name"`
 	LastName    string    `json:"last_name"`
 	PhoneNumber string    `json:"phone_number,omitempty"`
+	IsOnboarded bool      `json:"is_onboarded"`
 	CreatedAt   time.Time `json:"created_at"`
 }
 
@@ -41,6 +42,7 @@ func newUserResponse(user db.User) userResponse {
 		FirstName:   user.FirstName,
 		LastName:    user.LastName,
 		PhoneNumber: user.PhoneNumber,
+		IsOnboarded: user.IsOnboarded,
 		CreatedAt:   user.CreatedAt,
 	}
 }
@@ -99,6 +101,20 @@ func (s *Server) UpdateUser(ctx *gin.Context) {
 	}
 
 	user, err := s.store.UpdateUser(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	response := newUserResponse(user)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (s *Server) GetUser(ctx *gin.Context) {
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
+	user, err := s.store.GetUser(ctx, authPayload.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
