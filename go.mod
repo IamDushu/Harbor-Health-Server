@@ -9,10 +9,11 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
+	github.com/lib/pq v1.10.9
 	github.com/o1egl/paseto v1.0.0
 	github.com/spf13/viper v1.20.0
 	github.com/twilio/twilio-go v1.24.0
-	github.com/lib/pq v1.10.9 
+	github.com/go-resty/resty/v2 v2.16.5 
 )
 
 require (

@@ -63,8 +63,17 @@ func (s *Server) handleSignupUser(ctx *gin.Context, req registerUserRequest) {
 				return
 			}
 
-			//TODO
 			fmt.Println("OTP Sent via email" + strconv.Itoa(otp))
+			num, err := strconv.Atoi(s.config.TemplateID)
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+			err = util.SendEmailWithTemplate(s.config.BrevoAPIKey, num, req.Email, strconv.Itoa(otp))
+			if err != nil {
+				ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+				return
+			}
 
 			response.Token = token
 			ctx.JSON(http.StatusOK, response)
@@ -121,8 +130,17 @@ func (s *Server) handleLoginUser(ctx *gin.Context, req registerUserRequest) {
 		return
 	}
 
-	//TODO
 	fmt.Println("OTP Sent via email" + strconv.Itoa(otp))
+	num, err := strconv.Atoi(s.config.TemplateID)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	err = util.SendEmailWithTemplate(s.config.BrevoAPIKey, num, req.Email, strconv.Itoa(otp))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	response.Token = token
 	ctx.JSON(http.StatusOK, response)

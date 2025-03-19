@@ -18,6 +18,8 @@ type Config struct {
 	AuthTokenExpiry      time.Duration `mapstructure:"AUTH_TOKEN_EXPIRY"`
 	TwillioAccountSID    string        `mapstructure:"Twillio_Account_SID"`
 	TwillioAuthToken     string        `mapstructure:"Twillio_Auth_Token"`
+	BrevoAPIKey          string        `mapstructure:"Brevo_API_Key"`
+	TemplateID           string        `mapstructure:"Template_ID"`
 }
 
 // LoadConfig reads configuration from file or env variables
