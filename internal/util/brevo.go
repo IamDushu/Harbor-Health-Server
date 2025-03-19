@@ -19,7 +19,7 @@ func SendEmailWithTemplate(brevoApiKey string, templateId int, toEmail string, o
 			},
 			"templateId": templateId,
 			"params": map[string]string{
-				"otp": otp,
+				"OTP": otp,
 			},
 		}).
 		Post("https://api.brevo.com/v3/smtp/email")
