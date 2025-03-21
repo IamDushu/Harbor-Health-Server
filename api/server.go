@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	stream "github.com/GetStream/stream-chat-go/v5"
 	db "github.com/IamDushu/Harbor-Health-Server/internal/db/sqlc"
 	"github.com/IamDushu/Harbor-Health-Server/internal/token"
 	"github.com/IamDushu/Harbor-Health-Server/internal/util"
@@ -11,10 +12,11 @@ import (
 
 // Server serves HTTP requests for our api service.
 type Server struct {
-	config     util.Config
-	store      *db.Store
-	tokenMaker token.Maker
-	router     *gin.Engine
+	config       util.Config
+	store        *db.Store
+	tokenMaker   token.Maker
+	router       *gin.Engine
+	streamClient *stream.Client
 }
 
 func (s *Server) setupRouter() {
@@ -48,10 +50,16 @@ func NewServer(config util.Config, store *db.Store) (*Server, error) {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
 	}
 
+	client, err := stream.NewClient(config.StreamApiKey, config.StreamSecretKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create stream client: %w", err)
+	}
+
 	server := &Server{
-		config:     config,
-		store:      store,
-		tokenMaker: tokenMaker,
+		config:       config,
+		store:        store,
+		tokenMaker:   tokenMaker,
+		streamClient: client,
 	}
 
 	server.setupRouter()

@@ -16,10 +16,12 @@ type Config struct {
 	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
 	AuthTokenExpiry      time.Duration `mapstructure:"AUTH_TOKEN_EXPIRY"`
-	TwillioAccountSID    string        `mapstructure:"Twillio_Account_SID"`
-	TwillioAuthToken     string        `mapstructure:"Twillio_Auth_Token"`
-	BrevoAPIKey          string        `mapstructure:"Brevo_API_Key"`
-	TemplateID           string        `mapstructure:"Template_ID"`
+	TwillioAccountSID    string        `mapstructure:"TWILLIO_ACCOUNT_SID"`
+	TwillioAuthToken     string        `mapstructure:"TWILLIO_AUTH_KEY"`
+	BrevoAPIKey          string        `mapstructure:"BREVO_API_KEY"`
+	TemplateID           string        `mapstructure:"TEMPLATE_ID"`
+	StreamApiKey         string        `mapstructure:"STREAM_API_KEY"`
+	StreamSecretKey      string        `mapstructure:"STREAM_SECRET_KEY"`
 }
 
 // LoadConfig reads configuration from file or env variables
