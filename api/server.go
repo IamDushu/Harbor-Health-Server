@@ -28,6 +28,7 @@ func (s *Server) setupRouter() {
 
 	authRoutes := router.Group("/").Use(authMiddleware(s.tokenMaker))
 	authRoutes.GET("/api/users", s.GetUser)
+	authRoutes.GET("/api/locations", s.GetLocations)
 	authRoutes.POST("/api/users", s.UpdateUser)
 	authRoutes.POST("/api/members", s.CreateMember)
 
