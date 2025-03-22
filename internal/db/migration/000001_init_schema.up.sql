@@ -23,8 +23,33 @@ CREATE TABLE "members" (
 CREATE TABLE "providers" (
   "provider_id" uuid PRIMARY KEY,
   "user_id" uuid UNIQUE NOT NULL,
+  "credentials" varchar NOT NULL,
   "specialization" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE "provider_availability" (
+  "availability_id" uuid PRIMARY KEY,
+  "provider_id" uuid UNIQUE NOT NULL,
+  "day_of_week" int NOT NULL,
+  "start_time" time NOT NULL,
+  "end_time" time NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE "locations" (
+  "location_id" uuid PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "phone" varchar NOT NULL,
+  "address" text NOT NULL,
+  "latitude" decimal(9,6) NOT NULL,
+  "longitude" decimal(9,6) NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE "provider_locations" (
+  "provider_id" uuid NOT NULL,
+  "location_id" uuid NOT NULL
 );
 
 CREATE TABLE "visits" (
@@ -69,9 +94,23 @@ CREATE INDEX "idx_visits_member_id" ON "visits" ("members_id");
 
 CREATE UNIQUE INDEX email_purpose_valid_key ON email_verification (email, purpose) WHERE valid = true;
 
+CREATE UNIQUE INDEX unique_provider_availability
+ON provider_availability (provider_id, day_of_week, start_time, end_time);
+
+CREATE UNIQUE INDEX unique_provider_location
+ON provider_locations (provider_id, location_id);
+
+COMMENT ON COLUMN "provider_availability"."day_of_week" IS '0 = Sunday, 6 = Saturday';
+
 ALTER TABLE "members" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
 ALTER TABLE "providers" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+
+ALTER TABLE "provider_availability" ADD FOREIGN KEY ("provider_id") REFERENCES "providers" ("provider_id");
+
+ALTER TABLE "provider_locations" ADD FOREIGN KEY ("provider_id") REFERENCES "providers" ("provider_id");
+
+ALTER TABLE "provider_locations" ADD FOREIGN KEY ("location_id") REFERENCES "locations" ("location_id");
 
 ALTER TABLE "visits" ADD FOREIGN KEY ("provider_id") REFERENCES "providers" ("provider_id");
 

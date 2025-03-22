@@ -24,6 +24,7 @@ type verifyUserResponse struct {
 	AccessTokenExpiresAt  time.Time `json:"access_token_expires_at"`
 	RefreshToken          string    `json:"refresh_token"`
 	RefreshTokenExpiresAt time.Time `json:"refresh_token_expires_at"`
+	StreamToken           string    `json:"stream_token"`
 	Mode                  string    `json:"mode"`
 	Email                 string    `json:"email"`
 }
@@ -100,12 +101,25 @@ func (s *Server) verifyUser(ctx *gin.Context) {
 		return
 	}
 
+	user, err := s.store.GetUser(ctx, session.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	streamToken, err := s.streamClient.CreateToken(user.UserID.String(), time.Time{})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	response := verifyUserResponse{
 		SessionID:             session.SessionID,
 		AccessToken:           accessToken,
 		AccessTokenExpiresAt:  accessPayload.ExpiredAt,
 		RefreshToken:          refreshToken,
 		RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
+		StreamToken:           streamToken,
 		Mode:                  verifyRecord.Purpose,
 		Email:                 verifyRecord.Email,
 	}

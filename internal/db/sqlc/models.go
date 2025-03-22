@@ -23,6 +23,16 @@ type EmailVerification struct {
 	CreatedAt      time.Time `json:"created_at"`
 }
 
+type Location struct {
+	LocationID uuid.UUID `json:"location_id"`
+	Name       string    `json:"name"`
+	Phone      string    `json:"phone"`
+	Address    string    `json:"address"`
+	Latitude   string    `json:"latitude"`
+	Longitude  string    `json:"longitude"`
+	CreatedAt  time.Time `json:"created_at"`
+}
+
 type Member struct {
 	MemberID       uuid.UUID `json:"member_id"`
 	UserID         uuid.UUID `json:"user_id"`
@@ -38,8 +48,24 @@ type Member struct {
 type Provider struct {
 	ProviderID     uuid.UUID `json:"provider_id"`
 	UserID         uuid.UUID `json:"user_id"`
+	Credentials    string    `json:"credentials"`
 	Specialization string    `json:"specialization"`
 	CreatedAt      time.Time `json:"created_at"`
+}
+
+type ProviderAvailability struct {
+	AvailabilityID uuid.UUID `json:"availability_id"`
+	ProviderID     uuid.UUID `json:"provider_id"`
+	// 0 = Sunday, 6 = Saturday
+	DayOfWeek int32     `json:"day_of_week"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ProviderLocation struct {
+	ProviderID uuid.UUID `json:"provider_id"`
+	LocationID uuid.UUID `json:"location_id"`
 }
 
 type Session struct {
