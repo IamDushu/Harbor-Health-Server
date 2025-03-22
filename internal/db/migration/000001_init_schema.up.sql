@@ -25,6 +25,7 @@ CREATE TABLE "providers" (
   "user_id" uuid UNIQUE NOT NULL,
   "credentials" varchar NOT NULL,
   "specialization" varchar NOT NULL,
+  "is_available" boolean NOT NULL DEFAULT true,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 

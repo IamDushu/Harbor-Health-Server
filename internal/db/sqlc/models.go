@@ -50,6 +50,7 @@ type Provider struct {
 	UserID         uuid.UUID `json:"user_id"`
 	Credentials    string    `json:"credentials"`
 	Specialization string    `json:"specialization"`
+	IsAvailable    bool      `json:"is_available"`
 	CreatedAt      time.Time `json:"created_at"`
 }
 
