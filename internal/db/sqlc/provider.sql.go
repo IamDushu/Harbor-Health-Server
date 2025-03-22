@@ -7,9 +7,59 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
+
+const getAvailableSlotsForProvider = `-- name: GetAvailableSlotsForProvider :many
+SELECT pa.day_of_week, pa.start_time, pa.end_time
+FROM provider_availability pa
+WHERE pa.provider_id = $1
+  AND pa.day_of_week = $2
+  AND NOT EXISTS (
+    SELECT 1
+    FROM visits v
+    WHERE v.provider_id = pa.provider_id
+      AND v.scheduled_at::DATE = $3  
+      AND v.scheduled_at::TIME = pa.start_time  
+  )
+`
+
+type GetAvailableSlotsForProviderParams struct {
+	ProviderID  uuid.UUID `json:"provider_id"`
+	DayOfWeek   int32     `json:"day_of_week"`
+	ScheduledAt time.Time `json:"scheduled_at"`
+}
+
+type GetAvailableSlotsForProviderRow struct {
+	DayOfWeek int32     `json:"day_of_week"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+}
+
+func (q *Queries) GetAvailableSlotsForProvider(ctx context.Context, arg GetAvailableSlotsForProviderParams) ([]GetAvailableSlotsForProviderRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAvailableSlotsForProvider, arg.ProviderID, arg.DayOfWeek, arg.ScheduledAt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetAvailableSlotsForProviderRow{}
+	for rows.Next() {
+		var i GetAvailableSlotsForProviderRow
+		if err := rows.Scan(&i.DayOfWeek, &i.StartTime, &i.EndTime); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
 
 const getProvidersFromLocation = `-- name: GetProvidersFromLocation :many
 SELECT 

@@ -14,3 +14,16 @@ JOIN
 WHERE 
     pl.location_id = $1
     AND p.is_available = true;
+
+-- name: GetAvailableSlotsForProvider :many
+SELECT pa.day_of_week, pa.start_time, pa.end_time
+FROM provider_availability pa
+WHERE pa.provider_id = $1
+  AND pa.day_of_week = $2
+  AND NOT EXISTS (
+    SELECT 1
+    FROM visits v
+    WHERE v.provider_id = pa.provider_id
+      AND v.scheduled_at::DATE = $3  
+      AND v.scheduled_at::TIME = pa.start_time  
+  );

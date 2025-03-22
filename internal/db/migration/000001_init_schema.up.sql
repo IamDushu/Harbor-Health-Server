@@ -31,7 +31,7 @@ CREATE TABLE "providers" (
 
 CREATE TABLE "provider_availability" (
   "availability_id" uuid PRIMARY KEY,
-  "provider_id" uuid UNIQUE NOT NULL,
+  "provider_id" uuid NOT NULL,
   "day_of_week" int NOT NULL,
   "start_time" time NOT NULL,
   "end_time" time NOT NULL,
