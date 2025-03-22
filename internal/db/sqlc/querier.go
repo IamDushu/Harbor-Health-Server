@@ -17,6 +17,7 @@ type Querier interface {
 	CreateVerifyRecord(ctx context.Context, arg CreateVerifyRecordParams) (EmailVerification, error)
 	GetLocations(ctx context.Context) ([]Location, error)
 	GetMember(ctx context.Context, userID uuid.UUID) (Member, error)
+	GetProvidersFromLocation(ctx context.Context, locationID uuid.UUID) ([]GetProvidersFromLocationRow, error)
 	GetSession(ctx context.Context, sessionID uuid.UUID) (Session, error)
 	GetUser(ctx context.Context, email string) (User, error)
 	GetVerifyRecord(ctx context.Context, arg GetVerifyRecordParams) (EmailVerification, error)
