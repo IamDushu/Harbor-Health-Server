@@ -27,3 +27,11 @@ WHERE pa.provider_id = $1
       AND v.scheduled_at::DATE = $3  
       AND v.scheduled_at::TIME = pa.start_time  
   );
+
+-- name: CheckProviderAvailability :one
+SELECT EXISTS (
+    SELECT 1 FROM provider_availability
+    WHERE provider_id = $1 
+    AND day_of_week = $2 
+    AND start_time = $3
+) AS exists;

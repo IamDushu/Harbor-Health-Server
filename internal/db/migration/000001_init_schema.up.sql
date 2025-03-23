@@ -55,12 +55,13 @@ CREATE TABLE "provider_locations" (
 
 CREATE TABLE "visits" (
   "visit_id" uuid PRIMARY KEY,
-  "provider_id" uuid,
-  "members_id" uuid,
+  "provider_id" uuid NOT NULL, 
+  "member_id" uuid NOT NULL,
+  "location_id" uuid NOT NULL,
   "scheduled_at" timestamptz NOT NULL,
   "completed_at" timestamptz,
   "status" varchar NOT NULL,
-  "notes" TEXT,
+  "notes" TEXT NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
@@ -91,7 +92,7 @@ CREATE INDEX "idx_users_email" ON "users" ("email");
 
 CREATE INDEX "idx_visits_provider_id" ON "visits" ("provider_id");
 
-CREATE INDEX "idx_visits_member_id" ON "visits" ("members_id");
+CREATE INDEX "idx_visits_member_id" ON "visits" ("member_id");
 
 CREATE UNIQUE INDEX email_purpose_valid_key ON email_verification (email, purpose) WHERE valid = true;
 
@@ -115,4 +116,6 @@ ALTER TABLE "provider_locations" ADD FOREIGN KEY ("location_id") REFERENCES "loc
 
 ALTER TABLE "visits" ADD FOREIGN KEY ("provider_id") REFERENCES "providers" ("provider_id");
 
-ALTER TABLE "visits" ADD FOREIGN KEY ("members_id") REFERENCES "members" ("member_id");
+ALTER TABLE "visits" ADD FOREIGN KEY ("member_id") REFERENCES "members" ("member_id");
+
+ALTER TABLE "visits" ADD FOREIGN KEY ("location_id") REFERENCES "locations" ("location_id");

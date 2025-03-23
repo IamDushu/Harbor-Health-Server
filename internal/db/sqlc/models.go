@@ -91,12 +91,13 @@ type User struct {
 }
 
 type Visit struct {
-	VisitID     uuid.UUID      `json:"visit_id"`
-	ProviderID  uuid.NullUUID  `json:"provider_id"`
-	MembersID   uuid.NullUUID  `json:"members_id"`
-	ScheduledAt time.Time      `json:"scheduled_at"`
-	CompletedAt sql.NullTime   `json:"completed_at"`
-	Status      string         `json:"status"`
-	Notes       sql.NullString `json:"notes"`
-	CreatedAt   time.Time      `json:"created_at"`
+	VisitID     uuid.UUID    `json:"visit_id"`
+	ProviderID  uuid.UUID    `json:"provider_id"`
+	MemberID    uuid.UUID    `json:"member_id"`
+	LocationID  uuid.UUID    `json:"location_id"`
+	ScheduledAt time.Time    `json:"scheduled_at"`
+	CompletedAt sql.NullTime `json:"completed_at"`
+	Status      string       `json:"status"`
+	Notes       string       `json:"notes"`
+	CreatedAt   time.Time    `json:"created_at"`
 }

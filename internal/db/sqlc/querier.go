@@ -11,10 +11,13 @@ import (
 )
 
 type Querier interface {
+	CheckProviderAvailability(ctx context.Context, arg CheckProviderAvailabilityParams) (bool, error)
+	CheckVisitSlotExists(ctx context.Context, arg CheckVisitSlotExistsParams) (bool, error)
 	CreateMember(ctx context.Context, arg CreateMemberParams) (Member, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	CreateVerifyRecord(ctx context.Context, arg CreateVerifyRecordParams) (EmailVerification, error)
+	CreateVisit(ctx context.Context, arg CreateVisitParams) (Visit, error)
 	GetAvailableSlotsForProvider(ctx context.Context, arg GetAvailableSlotsForProviderParams) ([]GetAvailableSlotsForProviderRow, error)
 	GetLocations(ctx context.Context) ([]Location, error)
 	GetMember(ctx context.Context, userID uuid.UUID) (Member, error)

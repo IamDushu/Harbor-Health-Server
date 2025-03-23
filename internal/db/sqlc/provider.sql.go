@@ -12,6 +12,28 @@ import (
 	"github.com/google/uuid"
 )
 
+const checkProviderAvailability = `-- name: CheckProviderAvailability :one
+SELECT EXISTS (
+    SELECT 1 FROM provider_availability
+    WHERE provider_id = $1 
+    AND day_of_week = $2 
+    AND start_time::text = $3
+) AS exists
+`
+
+type CheckProviderAvailabilityParams struct {
+	ProviderID uuid.UUID `json:"provider_id"`
+	DayOfWeek  int32     `json:"day_of_week"`
+	StartTime  time.Time `json:"start_time"`
+}
+
+func (q *Queries) CheckProviderAvailability(ctx context.Context, arg CheckProviderAvailabilityParams) (bool, error) {
+	row := q.db.QueryRowContext(ctx, checkProviderAvailability, arg.ProviderID, arg.DayOfWeek, arg.StartTime)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const getAvailableSlotsForProvider = `-- name: GetAvailableSlotsForProvider :many
 SELECT pa.day_of_week, pa.start_time, pa.end_time
 FROM provider_availability pa
