@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,7 +18,7 @@ SELECT EXISTS (
     SELECT 1 FROM provider_availability
     WHERE provider_id = $1 
     AND day_of_week = $2 
-    AND start_time::text = $3
+    AND start_time = $3
 ) AS exists
 `
 
@@ -88,6 +89,7 @@ SELECT
     p.provider_id,
     u.first_name,
     u.last_name,
+    u.image_url,
     p.credentials,
     p.specialization
 FROM 
@@ -102,11 +104,12 @@ WHERE
 `
 
 type GetProvidersFromLocationRow struct {
-	ProviderID     uuid.UUID `json:"provider_id"`
-	FirstName      string    `json:"first_name"`
-	LastName       string    `json:"last_name"`
-	Credentials    string    `json:"credentials"`
-	Specialization string    `json:"specialization"`
+	ProviderID     uuid.UUID      `json:"provider_id"`
+	FirstName      string         `json:"first_name"`
+	LastName       string         `json:"last_name"`
+	ImageUrl       sql.NullString `json:"image_url"`
+	Credentials    string         `json:"credentials"`
+	Specialization string         `json:"specialization"`
 }
 
 func (q *Queries) GetProvidersFromLocation(ctx context.Context, locationID uuid.UUID) ([]GetProvidersFromLocationRow, error) {
@@ -122,6 +125,7 @@ func (q *Queries) GetProvidersFromLocation(ctx context.Context, locationID uuid.
 			&i.ProviderID,
 			&i.FirstName,
 			&i.LastName,
+			&i.ImageUrl,
 			&i.Credentials,
 			&i.Specialization,
 		); err != nil {

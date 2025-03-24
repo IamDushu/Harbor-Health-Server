@@ -81,13 +81,14 @@ type Session struct {
 }
 
 type User struct {
-	UserID      uuid.UUID `json:"user_id"`
-	Email       string    `json:"email"`
-	FirstName   string    `json:"first_name"`
-	LastName    string    `json:"last_name"`
-	PhoneNumber string    `json:"phone_number"`
-	IsOnboarded bool      `json:"is_onboarded"`
-	CreatedAt   time.Time `json:"created_at"`
+	UserID      uuid.UUID      `json:"user_id"`
+	Email       string         `json:"email"`
+	FirstName   string         `json:"first_name"`
+	LastName    string         `json:"last_name"`
+	PhoneNumber string         `json:"phone_number"`
+	IsOnboarded bool           `json:"is_onboarded"`
+	ImageUrl    sql.NullString `json:"image_url"`
+	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type Visit struct {

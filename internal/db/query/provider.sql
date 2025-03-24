@@ -3,6 +3,7 @@ SELECT
     p.provider_id,
     u.first_name,
     u.last_name,
+    u.image_url,
     p.credentials,
     p.specialization
 FROM 

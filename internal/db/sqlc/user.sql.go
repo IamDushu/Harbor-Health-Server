@@ -20,7 +20,7 @@ INSERT INTO users (
     phone_number
 ) VALUES (
    $1, $2, $3, $4, $5
-) RETURNING user_id, email, first_name, last_name, phone_number, is_onboarded, created_at
+) RETURNING user_id, email, first_name, last_name, phone_number, is_onboarded, image_url, created_at
 `
 
 type CreateUserParams struct {
@@ -47,13 +47,14 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.LastName,
 		&i.PhoneNumber,
 		&i.IsOnboarded,
+		&i.ImageUrl,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT user_id, email, first_name, last_name, phone_number, is_onboarded, created_at FROM users
+SELECT user_id, email, first_name, last_name, phone_number, is_onboarded, image_url, created_at FROM users
 WHERE email = $1 LIMIT 1
 `
 
@@ -67,6 +68,7 @@ func (q *Queries) GetUser(ctx context.Context, email string) (User, error) {
 		&i.LastName,
 		&i.PhoneNumber,
 		&i.IsOnboarded,
+		&i.ImageUrl,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -76,7 +78,7 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE users 
 SET first_name = $1, last_name = $2, phone_number = $3, is_onboarded = $4
 WHERE email = $5
-RETURNING user_id, email, first_name, last_name, phone_number, is_onboarded, created_at
+RETURNING user_id, email, first_name, last_name, phone_number, is_onboarded, image_url, created_at
 `
 
 type UpdateUserParams struct {
@@ -103,6 +105,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.LastName,
 		&i.PhoneNumber,
 		&i.IsOnboarded,
+		&i.ImageUrl,
 		&i.CreatedAt,
 	)
 	return i, err

@@ -5,6 +5,7 @@ CREATE TABLE "users" (
   "last_name" varchar NOT NULL,
   "phone_number" varchar NOT NULL,
   "is_onboarded" boolean NOT NULL DEFAULT false,
+  "image_url" TEXT,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
