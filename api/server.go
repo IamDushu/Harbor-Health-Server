@@ -30,6 +30,8 @@ func (s *Server) setupRouter() {
 	authRoutes.GET("/api/users", s.GetUser)
 	authRoutes.GET("/api/locations", s.GetLocations)
 	authRoutes.GET("/api/providers", s.GetProvidersFromLocation)
+	authRoutes.GET("/api/visits", s.GetPendingVisits)
+	authRoutes.GET("/api/visits/:visit_id", s.GetVisit)
 	authRoutes.GET("/api/providers/:provider_id/availability", s.GetProviderAvailability)
 	authRoutes.POST("/api/users", s.UpdateUser)
 	authRoutes.POST("/api/members", s.CreateMember)

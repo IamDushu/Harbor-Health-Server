@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -68,6 +69,153 @@ func (q *Queries) CreateVisit(ctx context.Context, arg CreateVisitParams) (Visit
 		&i.Status,
 		&i.Notes,
 		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getAllPendingVisits = `-- name: GetAllPendingVisits :many
+SELECT visit_id, provider_id, member_id, location_id, scheduled_at, completed_at, status, notes, created_at 
+FROM visits
+WHERE member_id = $1
+  AND status = 'pending'
+`
+
+func (q *Queries) GetAllPendingVisits(ctx context.Context, memberID uuid.UUID) ([]Visit, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPendingVisits, memberID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Visit{}
+	for rows.Next() {
+		var i Visit
+		if err := rows.Scan(
+			&i.VisitID,
+			&i.ProviderID,
+			&i.MemberID,
+			&i.LocationID,
+			&i.ScheduledAt,
+			&i.CompletedAt,
+			&i.Status,
+			&i.Notes,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAllPendingVisitsWithProviderDetails = `-- name: GetAllPendingVisitsWithProviderDetails :many
+SELECT 
+    v.visit_id,
+    v.scheduled_at,
+    u.image_url AS provider_image_url,
+    u.first_name AS provider_firstName,
+    u.last_name AS provider_lastName,
+    pr.credentials AS provider_credentials
+FROM visits v
+JOIN providers pr ON v.provider_id = pr.provider_id
+JOIN users u ON pr.user_id = u.user_id
+WHERE v.member_id = $1
+  AND v.status = 'pending'
+`
+
+type GetAllPendingVisitsWithProviderDetailsRow struct {
+	VisitID             uuid.UUID      `json:"visit_id"`
+	ScheduledAt         time.Time      `json:"scheduled_at"`
+	ProviderImageUrl    sql.NullString `json:"provider_image_url"`
+	ProviderFirstname   string         `json:"provider_firstname"`
+	ProviderLastname    string         `json:"provider_lastname"`
+	ProviderCredentials string         `json:"provider_credentials"`
+}
+
+func (q *Queries) GetAllPendingVisitsWithProviderDetails(ctx context.Context, memberID uuid.UUID) ([]GetAllPendingVisitsWithProviderDetailsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPendingVisitsWithProviderDetails, memberID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetAllPendingVisitsWithProviderDetailsRow{}
+	for rows.Next() {
+		var i GetAllPendingVisitsWithProviderDetailsRow
+		if err := rows.Scan(
+			&i.VisitID,
+			&i.ScheduledAt,
+			&i.ProviderImageUrl,
+			&i.ProviderFirstname,
+			&i.ProviderLastname,
+			&i.ProviderCredentials,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getVisitInfo = `-- name: GetVisitInfo :one
+SELECT 
+    v.visit_id,
+    l.phone AS location_phone,
+    l.latitude,
+    l.longitude,
+    l.name AS location_name,
+    l.address AS location_address,
+    l.image_url AS location_image,
+    u.image_url AS provider_image,
+    u.first_name || ' ' || u.last_name AS provider_name,
+    p.credentials AS provider_credentials,
+    v.scheduled_at AS visit_time
+FROM visits v
+JOIN locations l ON v.location_id = l.location_id
+JOIN providers p ON v.provider_id = p.provider_id
+JOIN users u ON p.user_id = u.user_id
+WHERE v.visit_id = $1
+`
+
+type GetVisitInfoRow struct {
+	VisitID             uuid.UUID      `json:"visit_id"`
+	LocationPhone       string         `json:"location_phone"`
+	Latitude            string         `json:"latitude"`
+	Longitude           string         `json:"longitude"`
+	LocationName        string         `json:"location_name"`
+	LocationAddress     string         `json:"location_address"`
+	LocationImage       sql.NullString `json:"location_image"`
+	ProviderImage       sql.NullString `json:"provider_image"`
+	ProviderName        interface{}    `json:"provider_name"`
+	ProviderCredentials string         `json:"provider_credentials"`
+	VisitTime           time.Time      `json:"visit_time"`
+}
+
+func (q *Queries) GetVisitInfo(ctx context.Context, visitID uuid.UUID) (GetVisitInfoRow, error) {
+	row := q.db.QueryRowContext(ctx, getVisitInfo, visitID)
+	var i GetVisitInfoRow
+	err := row.Scan(
+		&i.VisitID,
+		&i.LocationPhone,
+		&i.Latitude,
+		&i.Longitude,
+		&i.LocationName,
+		&i.LocationAddress,
+		&i.LocationImage,
+		&i.ProviderImage,
+		&i.ProviderName,
+		&i.ProviderCredentials,
+		&i.VisitTime,
 	)
 	return i, err
 }

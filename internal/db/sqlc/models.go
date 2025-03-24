@@ -24,13 +24,14 @@ type EmailVerification struct {
 }
 
 type Location struct {
-	LocationID uuid.UUID `json:"location_id"`
-	Name       string    `json:"name"`
-	Phone      string    `json:"phone"`
-	Address    string    `json:"address"`
-	Latitude   string    `json:"latitude"`
-	Longitude  string    `json:"longitude"`
-	CreatedAt  time.Time `json:"created_at"`
+	LocationID uuid.UUID      `json:"location_id"`
+	Name       string         `json:"name"`
+	Phone      string         `json:"phone"`
+	Address    string         `json:"address"`
+	Latitude   string         `json:"latitude"`
+	Longitude  string         `json:"longitude"`
+	ImageUrl   sql.NullString `json:"image_url"`
+	CreatedAt  time.Time      `json:"created_at"`
 }
 
 type Member struct {

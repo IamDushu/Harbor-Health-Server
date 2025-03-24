@@ -5,6 +5,7 @@ import (
 	"time"
 
 	db "github.com/IamDushu/Harbor-Health-Server/internal/db/sqlc"
+	"github.com/IamDushu/Harbor-Health-Server/internal/token"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -100,4 +101,47 @@ func (s *Server) CreateVisit(ctx *gin.Context) {
 
 	response := newVisitResponse(newVisit)
 	ctx.JSON(http.StatusOK, response)
+}
+
+func (s *Server) GetPendingVisits(ctx *gin.Context) {
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
+	user, err := s.store.GetUser(ctx, authPayload.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	member, err := s.store.GetMember(ctx, user.UserID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	visits, err := s.store.GetAllPendingVisitsWithProviderDetails(ctx, member.MemberID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, visits)
+}
+
+func (s *Server) GetVisit(ctx *gin.Context) {
+	visitID := ctx.Param("visit_id")
+
+	parsedVisitID, err := uuid.Parse(visitID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid visit ID format"})
+		return
+	}
+
+	visitInfo, err := s.store.GetVisitInfo(ctx, parsedVisitID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, visitInfo)
 }

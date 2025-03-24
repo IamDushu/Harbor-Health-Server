@@ -1,17 +1,17 @@
 -- Seed Locations
-INSERT INTO locations (location_id, name, phone, address, latitude, longitude)
+INSERT INTO locations (location_id, name, phone, address, latitude, longitude, image_url)
 VALUES
-  ('550e8400-e29b-41d4-a716-446655440000', 'North University Clinic & Express Care', '(855) 481-8375', '3200 Red River St, Suite 201, Austin, TX 78705', 30.291653, -97.727390),
-  ('550e8400-e29b-41d4-a716-446655440001', 'East Austin Clinic', '(855) 481-8375', '507 Calles St, #100, Austin, TX 78702', 30.258374, -97.712336),
-  ('550e8400-e29b-41d4-a716-446655440002', 'North Central Clinic', '(855) 481-8375', '911 W 38th St, Suite 101, Austin, TX 78705', 30.304991, -97.743009),
-  ('550e8400-e29b-41d4-a716-446655440003', 'Westlake Clinic', '(855) 481-8375', '500 N. Capital of Texas Hwy, Building 6, Suite 125, Austin, TX 78746', 30.308888, -97.827220),
-  ('550e8400-e29b-41d4-a716-446655440004', 'Onion Creek Clinic & Express Care', '(855) 481-8375', '701 FM 1626, Suite 100, Austin, TX 78748', 30.140714, -97.798167),
-  ('550e8400-e29b-41d4-a716-446655440005', 'Park Bend Clinic', '(855) 481-8375', '2200 Park Bend Dr, Building 2, Suite 300, Austin, TX 78758', 30.409131, -97.703271),
-  ('550e8400-e29b-41d4-a716-446655440006', 'La Frontera Clinic', '(855) 481-8375', '505 W Louis Henna Blvd, #100, Round Rock, TX 78728', 30.479308, -97.680039),
-  ('550e8400-e29b-41d4-a716-446655440007', 'Oakwood Clinic', '(855) 481-8375', '511 Oakwood Blvd, Suite 200, Round Rock, TX 78681', 30.512354, -97.712107),
-  ('550e8400-e29b-41d4-a716-446655440008', 'Kyle Clinic', '(855) 481-8375', '177 Kirkham Circle, Kyle, TX 78640', 30.013655, -97.889338),
-  ('550e8400-e29b-41d4-a716-446655440009', 'Round Rock Express Care', '(855) 481-8375', '455 University Blvd, Suite 400, Round Rock, TX 78665', 30.561202, -97.680883),
-  ('550e8400-e29b-41d4-a716-446655440010', 'Williams Drive Clinic', '(855) 481-8375', '4879 Williams Dr, Building 1, Suite 103, Georgetown, TX 78633', 30.695858, -97.733528);
+  ('550e8400-e29b-41d4-a716-446655440000', 'North University Clinic & Express Care', '(855) 481-8375', '3200 Red River St, Suite 201, Austin, TX 78705', 30.291653, -97.727390, 'https://assets.harborhealth.com/clinics/clinic-NU-FrontAwning.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440001', 'East Austin Clinic', '(855) 481-8375', '507 Calles St, #100, Austin, TX 78702', 30.258374, -97.712336, 'https://assets.harborhealth.com/clinics/clinic-EA-FrontDoor.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440002', 'North Central Clinic', '(855) 481-8375', '911 W 38th St, Suite 101, Austin, TX 78705', 30.304991, -97.743009, 'https://harbor-health-assets.s3.amazonaws.com/clinics/clinic-NC-FrontDoorClose2.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440003', 'Westlake Clinic', '(855) 481-8375', '500 N. Capital of Texas Hwy, Building 6, Suite 125, Austin, TX 78746', 30.308888, -97.827220, 'https://assets.harborhealth.com/clinics/clinic-WL-ReserveSign.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440004', 'Onion Creek Clinic & Express Care', '(855) 481-8375', '701 FM 1626, Suite 100, Austin, TX 78748', 30.140714, -97.798167, 'https://assets.harborhealth.com/clinics/clinic-OC-BuildingSide.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440005', 'Park Bend Clinic', '(855) 481-8375', '2200 Park Bend Dr, Building 2, Suite 300, Austin, TX 78758', 30.409131, -97.703271, 'https://assets.harborhealth.com/clinics/clinic-PB-BuildingFront.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440006', 'La Frontera Clinic', '(855) 481-8375', '505 W Louis Henna Blvd, #100, Round Rock, TX 78728', 30.479308, -97.680039, 'https://assets.harborhealth.com/clinics/clinic-LF-FrontDoor.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440007', 'Oakwood Clinic', '(855) 481-8375', '511 Oakwood Blvd, Suite 200, Round Rock, TX 78681', 30.512354, -97.712107, 'https://assets.harborhealth.com/clinics/clinic-OW-Monument1.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440008', 'Kyle Clinic', '(855) 481-8375', '177 Kirkham Circle, Kyle, TX 78640', 30.013655, -97.889338, 'https://assets.harborhealth.com/clinics/clinic-KY-FrontDoor.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440009', 'Round Rock Express Care', '(855) 481-8375', '455 University Blvd, Suite 400, Round Rock, TX 78665', 30.561202, -97.680883, 'https://assets.harborhealth.com/clinics/clinic-RR-BuildingAngle.jpg'),
+  ('550e8400-e29b-41d4-a716-446655440010', 'Williams Drive Clinic', '(855) 481-8375', '4879 Williams Dr, Building 1, Suite 103, Georgetown, TX 78633', 30.695858, -97.733528, 'https://assets.harborhealth.com/blog/WD-ParkingLotEntrance.jpg');
 
 -- Seed Users
 INSERT INTO "users" ("user_id", "first_name", "last_name", "email", "phone_number", "is_onboarded", "image_url") VALUES

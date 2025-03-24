@@ -46,6 +46,7 @@ CREATE TABLE "locations" (
   "address" text NOT NULL,
   "latitude" decimal(9,6) NOT NULL,
   "longitude" decimal(9,6) NOT NULL,
+  "image_url" TEXT,
   "created_at" timestamptz NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 

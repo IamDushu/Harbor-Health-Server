@@ -10,7 +10,7 @@ import (
 )
 
 const getLocations = `-- name: GetLocations :many
-SELECT location_id, name, phone, address, latitude, longitude, created_at FROM locations
+SELECT location_id, name, phone, address, latitude, longitude, image_url, created_at FROM locations
 `
 
 func (q *Queries) GetLocations(ctx context.Context) ([]Location, error) {
@@ -29,6 +29,7 @@ func (q *Queries) GetLocations(ctx context.Context) ([]Location, error) {
 			&i.Address,
 			&i.Latitude,
 			&i.Longitude,
+			&i.ImageUrl,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
