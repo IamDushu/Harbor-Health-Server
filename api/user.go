@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -19,13 +20,14 @@ type createUserRequest struct {
 }
 
 type userResponse struct {
-	UserID      uuid.UUID `json:"user_id"`
-	Email       string    `json:"email"`
-	FirstName   string    `json:"first_name"`
-	LastName    string    `json:"last_name"`
-	PhoneNumber string    `json:"phone_number,omitempty"`
-	IsOnboarded bool      `json:"is_onboarded"`
-	CreatedAt   time.Time `json:"created_at"`
+	UserID      uuid.UUID      `json:"user_id"`
+	Email       string         `json:"email"`
+	FirstName   string         `json:"first_name"`
+	LastName    string         `json:"last_name"`
+	ImageUrl    sql.NullString `json:"image_url"`
+	PhoneNumber string         `json:"phone_number,omitempty"`
+	IsOnboarded bool           `json:"is_onboarded"`
+	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type updateUserRequest struct {
@@ -40,6 +42,7 @@ func newUserResponse(user db.User) userResponse {
 		Email:       user.Email,
 		FirstName:   user.FirstName,
 		LastName:    user.LastName,
+		ImageUrl:    user.ImageUrl,
 		PhoneNumber: user.PhoneNumber,
 		IsOnboarded: user.IsOnboarded,
 		CreatedAt:   user.CreatedAt,

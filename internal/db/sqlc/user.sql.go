@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -17,18 +18,20 @@ INSERT INTO users (
     email, 
     first_name, 
     last_name,
-    phone_number
+    phone_number,
+    image_url
 ) VALUES (
-   $1, $2, $3, $4, $5
+   $1, $2, $3, $4, $5, $6
 ) RETURNING user_id, email, first_name, last_name, phone_number, is_onboarded, image_url, created_at
 `
 
 type CreateUserParams struct {
-	UserID      uuid.UUID `json:"user_id"`
-	Email       string    `json:"email"`
-	FirstName   string    `json:"first_name"`
-	LastName    string    `json:"last_name"`
-	PhoneNumber string    `json:"phone_number"`
+	UserID      uuid.UUID      `json:"user_id"`
+	Email       string         `json:"email"`
+	FirstName   string         `json:"first_name"`
+	LastName    string         `json:"last_name"`
+	PhoneNumber string         `json:"phone_number"`
+	ImageUrl    sql.NullString `json:"image_url"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -38,6 +41,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.FirstName,
 		arg.LastName,
 		arg.PhoneNumber,
+		arg.ImageUrl,
 	)
 	var i User
 	err := row.Scan(

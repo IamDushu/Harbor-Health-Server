@@ -2,8 +2,10 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	stream_chat "github.com/GetStream/stream-chat-go/v5"
 	"github.com/google/uuid"
 )
 
@@ -20,7 +22,7 @@ type CreateMemberArgs struct {
 	AcceptedTerms  bool      `json:"accepted_terms"`
 }
 
-func (s *Store) CreateMemberTx(ctx context.Context, memberArgs CreateMemberArgs) (Member, error) {
+func (s *Store) CreateMemberTx(ctx context.Context, memberArgs CreateMemberArgs, streamClient *stream_chat.Client) (Member, error) {
 
 	var newMember Member
 
@@ -52,6 +54,15 @@ func (s *Store) CreateMemberTx(ctx context.Context, memberArgs CreateMemberArgs)
 		member, err := q.CreateMember(ctx, memArgs)
 		if err != nil {
 			return err
+		}
+
+		_, err = streamClient.UpsertUsers(ctx, &stream_chat.User{
+			ID:    user.UserID.String(),
+			Name:  user.FirstName,
+			Image: user.ImageUrl.String,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to upsert user in Stream: %w", err)
 		}
 
 		newMember = member

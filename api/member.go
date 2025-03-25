@@ -58,7 +58,7 @@ func (s *Server) CreateMember(ctx *gin.Context) {
 		AcceptedTerms:  req.AcceptedTerms,
 	}
 
-	newMember, err := s.store.CreateMemberTx(ctx, memArgs)
+	newMember, err := s.store.CreateMemberTx(ctx, memArgs, s.streamClient)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
