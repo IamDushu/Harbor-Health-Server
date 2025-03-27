@@ -52,21 +52,24 @@ func (s *Server) verifyUser(ctx *gin.Context) {
 		return
 	}
 
-	if err := util.HashVerify(request.Digits, verifyRecord.HashedOtp); err != nil {
-		// Updates attempt +1 and invalidates token if attempts = 5
-		updatedRecord, err := s.store.UpdateVerifyAttemptTx(ctx, verifyRecord.VerificationID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	//TODO: CAUTION CAUTION: ONLY FOR TESTING
+	if !(request.Digits == "18375") {
+		if err := util.HashVerify(request.Digits, verifyRecord.HashedOtp); err != nil {
+			// Updates attempt +1 and invalidates token if attempts = 5
+			updatedRecord, err := s.store.UpdateVerifyAttemptTx(ctx, verifyRecord.VerificationID)
+			if err != nil {
+				ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+				return
+			}
+
+			if updatedRecord.Attempts == 5 {
+				ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("too many invalid requests - please go back to get a new code. [rate_limited]")))
+				return
+			}
+
+			ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("the entered code is incorrect. please try again and check for typos. [digits_mismatch]")))
 			return
 		}
-
-		if updatedRecord.Attempts == 5 {
-			ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("too many invalid requests - please go back to get a new code. [rate_limited]")))
-			return
-		}
-
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("the entered code is incorrect. please try again and check for typos. [digits_mismatch]")))
-		return
 	}
 
 	//Invalidates token & Creates an User if mode is signup.
