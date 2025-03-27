@@ -27,7 +27,7 @@ type Config struct {
 }
 
 // LoadConfig reads configuration from file or env variables
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig() (config Config, err error) {
 	viper.AutomaticEnv()
 
 	viper.SetDefault("SERVER_ADDRESS", fmt.Sprintf("0.0.0.0:%s", os.Getenv("PORT")))
