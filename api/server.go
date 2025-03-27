@@ -22,6 +22,7 @@ type Server struct {
 func (s *Server) setupRouter() {
 	router := gin.Default()
 
+	router.GET("/healthz", s.healthCheck)
 	router.POST("/api/registration/email", s.registerUser)
 	router.POST("/api/registration/email/verify", s.verifyUser)
 	router.POST("/api/tokens/renew_access", s.renewAccessToken)
