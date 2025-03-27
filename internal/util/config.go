@@ -1,6 +1,8 @@
 package util
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
@@ -26,16 +28,9 @@ type Config struct {
 
 // LoadConfig reads configuration from file or env variables
 func LoadConfig(path string) (config Config, err error) {
-	viper.AddConfigPath(path)
-	viper.SetConfigName("app")
-	viper.SetConfigType("env") // json, xml
-
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		return
-	}
+	viper.SetDefault("SERVER_ADDRESS", fmt.Sprintf("0.0.0.0:%s", os.Getenv("PORT")))
 
 	err = viper.Unmarshal(&config)
 	return
