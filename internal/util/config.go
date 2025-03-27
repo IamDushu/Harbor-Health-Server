@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -31,20 +30,38 @@ type Config struct {
 func LoadConfig() (config Config, err error) {
 	viper.AutomaticEnv()
 
-	// Just for visibility
-	log.Println("Viper Raw DB_DRIVER:", viper.Get("DB_DRIVER"))
-	log.Println("Viper Raw DB_SOURCE:", viper.Get("DB_SOURCE"))
-
-	// Set PORT-based fallback
+	// Default PORT fallback
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 	viper.SetDefault("SERVER_ADDRESS", fmt.Sprintf("0.0.0.0:%s", port))
 
-	err = viper.Unmarshal(&config)
+	// Manually get all fields
+	config.DBDriver = viper.GetString("DB_DRIVER")
+	config.DBSource = viper.GetString("DB_SOURCE")
+	config.ServerAddress = viper.GetString("SERVER_ADDRESS")
+	config.TokenSymmetricKey = viper.GetString("TOKEN_SYMMETRIC_KEY")
+	config.TwillioAccountSID = viper.GetString("TWILLIO_ACCOUNT_SID")
+	config.TwillioAuthToken = viper.GetString("TWILLIO_AUTH_KEY")
+	config.BrevoAPIKey = viper.GetString("BREVO_API_KEY")
+	config.TemplateID = viper.GetString("TEMPLATE_ID")
+	config.StreamApiKey = viper.GetString("STREAM_API_KEY")
+	config.StreamSecretKey = viper.GetString("STREAM_SECRET_KEY")
+
+	// Parse durations safely
+	config.AccessTokenDuration, err = time.ParseDuration(viper.GetString("ACCESS_TOKEN_DURATION"))
 	if err != nil {
-		log.Println("❌ Viper failed to unmarshal config:", err)
+		return
 	}
+	config.RefreshTokenDuration, err = time.ParseDuration(viper.GetString("REFRESH_TOKEN_DURATION"))
+	if err != nil {
+		return
+	}
+	config.AuthTokenExpiry, err = time.ParseDuration(viper.GetString("AUTH_TOKEN_EXPIRY"))
+	if err != nil {
+		return
+	}
+
 	return
 }
