@@ -31,23 +31,20 @@ type Config struct {
 func LoadConfig() (config Config, err error) {
 	viper.AutomaticEnv()
 
+	// Just for visibility
+	log.Println("Viper Raw DB_DRIVER:", viper.Get("DB_DRIVER"))
+	log.Println("Viper Raw DB_SOURCE:", viper.Get("DB_SOURCE"))
+
+	// Set PORT-based fallback
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 	viper.SetDefault("SERVER_ADDRESS", fmt.Sprintf("0.0.0.0:%s", port))
 
-	log.Println("🔍 Attempting to unmarshal config from environment...")
-
 	err = viper.Unmarshal(&config)
 	if err != nil {
-		log.Println("❌ Failed to unmarshal config:", err)
-		return
+		log.Println("❌ Viper failed to unmarshal config:", err)
 	}
-
-	log.Println("✅ Config successfully unmarshaled!")
-	log.Printf("📦 DB_DRIVER = %s", config.DBDriver)
-	log.Printf("📦 DB_SOURCE = %s", config.DBSource)
-	log.Printf("📦 SERVER_ADDRESS = %s", config.ServerAddress)
 	return
 }
