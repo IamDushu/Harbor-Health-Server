@@ -1,6 +1,8 @@
 package util
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
@@ -25,18 +27,41 @@ type Config struct {
 }
 
 // LoadConfig reads configuration from file or env variables
-func LoadConfig(path string) (config Config, err error) {
-	viper.AddConfigPath(path)
-	viper.SetConfigName("app")
-	viper.SetConfigType("env") // json, xml
-
+func LoadConfig() (config Config, err error) {
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
+	// Default PORT fallback
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	viper.SetDefault("SERVER_ADDRESS", fmt.Sprintf("0.0.0.0:%s", port))
+
+	// Manually get all fields
+	config.DBDriver = viper.GetString("DB_DRIVER")
+	config.DBSource = viper.GetString("DB_SOURCE")
+	config.ServerAddress = viper.GetString("SERVER_ADDRESS")
+	config.TokenSymmetricKey = viper.GetString("TOKEN_SYMMETRIC_KEY")
+	config.TwillioAccountSID = viper.GetString("TWILLIO_ACCOUNT_SID")
+	config.TwillioAuthToken = viper.GetString("TWILLIO_AUTH_KEY")
+	config.BrevoAPIKey = viper.GetString("BREVO_API_KEY")
+	config.TemplateID = viper.GetString("TEMPLATE_ID")
+	config.StreamApiKey = viper.GetString("STREAM_API_KEY")
+	config.StreamSecretKey = viper.GetString("STREAM_SECRET_KEY")
+
+	// Parse durations safely
+	config.AccessTokenDuration, err = time.ParseDuration(viper.GetString("ACCESS_TOKEN_DURATION"))
+	if err != nil {
+		return
+	}
+	config.RefreshTokenDuration, err = time.ParseDuration(viper.GetString("REFRESH_TOKEN_DURATION"))
+	if err != nil {
+		return
+	}
+	config.AuthTokenExpiry, err = time.ParseDuration(viper.GetString("AUTH_TOKEN_EXPIRY"))
 	if err != nil {
 		return
 	}
 
-	err = viper.Unmarshal(&config)
 	return
 }
